@@ -17,13 +17,17 @@ public:
 	{
 		const auto& [vertexSource, fragmentSource] = ParseShader(vertexShaderPath, fragmentShaderPath);
 		m_rendererID = CreateShader(vertexSource, fragmentSource);
-		vertexShader = vertexSource;
-		fragmentShader = fragmentSource;
+	}
+
+	Shader(const std::string& vertexShaderPath, const std::string& fragmengShaderPath,
+		const std::string& geometryShaderPath)
+	{
+		// todo
 	}
 
 	~Shader()
 	{
-		glDeleteShader(m_rendererID);
+		glDeleteProgram(m_rendererID);
 	}
 
 	void Bind() const
@@ -34,16 +38,6 @@ public:
 	void Unbind() const
 	{
 		glUseProgram(0);
-	}
-
-	const std::string& GetVertexShader() const
-	{
-		return vertexShader;
-	}
-
-	const std::string& GetFragmentShader() const
-	{
-		return fragmentShader;
 	}
 
 	unsigned int GetShaderID() const
@@ -114,6 +108,14 @@ private:
 		std::ifstream vShaderFile(vertexShaderPath);
 		std::ifstream fShaderFile(fragmentShaderPath);
 
+#ifdef  _DEBUG
+		if (!vShaderFile.is_open())  
+			std::cout << "failed to read vertex shader file: " << vertexShaderPath; 
+		
+		if (!fShaderFile.is_open()) 
+			std::cout << "failed to open fragment shader file: " << fragmentShaderPath;
+#endif 
+
 		std::stringstream vShaderStream, fShaderStream;
 		vShaderStream << vShaderFile.rdbuf();
 		fShaderStream << fShaderFile.rdbuf();
@@ -144,6 +146,4 @@ private:
 
 private:
 	unsigned int m_rendererID;
-	std::string vertexShader;
-	std::string fragmentShader;
 };

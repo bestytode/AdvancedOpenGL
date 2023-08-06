@@ -1,4 +1,5 @@
 #define GLEW_STATIC
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -21,7 +22,7 @@ constexpr int width = 800;
 constexpr int height = 600;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(0.0f, 0.0f, 3.0f);
 float lastX = (float)width / 2.0;
 float lastY = (float)height / 2.0;
 bool firstMouse = true;
@@ -229,8 +230,7 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     float xpos = static_cast<float>(xposIn);
     float ypos = static_cast<float>(yposIn);
 
-    if (firstMouse)
-    {
+    if (firstMouse) {
         lastX = xpos;
         lastY = ypos;
         firstMouse = false;
@@ -252,7 +252,6 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
-// utility function for loading a 2D texture from file
 unsigned int LoadTexture(const std::string& path)
 {
     unsigned int textureID;

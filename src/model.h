@@ -1,4 +1,5 @@
 #pragma once
+
 #ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -9,7 +10,6 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-
 #include <GL/glew.h>
 
 #include "mesh.h"
@@ -22,13 +22,12 @@ class Model
 public:
 	Model() = delete;
 
-	~Model() = default;
-
 	Model(const std::string& _filePath) {
 		LoadModel(_filePath);
 	}
 
-	void Draw(Shader& _shader) {
+	void Draw(Shader& _shader) 
+	{
 		for (size_t i = 0; i < meshes.size(); i++)
 			meshes[i].Draw(_shader);
 	}
@@ -55,10 +54,13 @@ void Model::LoadModel(const std::string& _filePath)
 	Assimp::Importer import;
 	const aiScene* scene = import.ReadFile(_filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
 
+#ifdef _DEBUG
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
 		return;
 	}
+#endif 
+
 	directory = _filePath.substr(0, _filePath.find_last_of('/'));
 
 	ProcessNode(scene->mRootNode, scene);
@@ -209,12 +211,9 @@ unsigned int TextureFromFile(const char* path, const std::string& directory)
 	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
 	if (data) {
 		GLenum format;
-		if (nrComponents == 1)
-			format = GL_RED;
-		else if (nrComponents == 3)
-			format = GL_RGB;
-		else if (nrComponents == 4)
-			format = GL_RGBA;
+		if (nrComponents == 1) format = GL_RED;
+		if (nrComponents == 3) format = GL_RGB;
+		if (nrComponents == 4) format = GL_RGBA;
 
 		glBindTexture(GL_TEXTURE_2D, textureID);
 		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
