@@ -19,25 +19,20 @@ enum CameraMovementDirection
 class Camera
 {
 public:
-    Camera(const float _x, const float _y, const float _z)
+    Camera(float _x, float _y, float _z)
+        : position(glm::vec3(_x, _y, _z)),
+        direction(glm::vec3(0.0f, 0.0f, -1.0f)),
+        up(glm::vec3(0.0f, 1.0f, 0.0f)),
+        worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
+        yaw(-90.f), pitch(0.0f),
+        movementSpeed(2.5f), mouseSensitivity(0.1f), fov(45.0f)
     {
-        glm::vec3 _position(_x, _y, _z);
-        this->position = _position;
-        this->direction = glm::vec3(0.0f, 0.0f, -1.0f);
-        this->up = glm::vec3(0.0f, 1.0f, 0.0f);
-        this->worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
-        this->right = glm::normalize(glm::cross(direction, worldUp));
-
-        yaw = -90.f;
-        pitch = 0.0f;
-
-        movementSpeed = 2.5f;
-        mouseSensitivity = 0.1f;
-        fov = 45.0f;
+        right = glm::normalize(glm::cross(direction, worldUp));
+        UpdateCameraVectors();
     }
 
-    Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f))
-        : position(position),
+    Camera(glm::vec3 _position)
+        : position(_position),
         direction(glm::vec3(0.0f, 0.0f, -1.0f)),
         up(glm::vec3(0.0f, 1.0f, 0.0f)),
         worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
