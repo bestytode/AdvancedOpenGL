@@ -170,7 +170,7 @@ int main()
         shader.SetMat4("projection", projection);
 
         // floor
-        glStencilMask(0x00);
+        glStencilMask(0x00); // Disable writing when rendering floor
 
         glBindVertexArray(planeVAO);
         glBindTexture(GL_TEXTURE_2D, floorTexture);
@@ -179,8 +179,8 @@ int main()
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         // cubes
-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
-        glStencilMask(0xFF);
+        glStencilFunc(GL_ALWAYS, 1, 0xFF); // All frags update stencil buffer
+        glStencilMask(0xFF); // Enable writing when rendering cubes
         glBindVertexArray(cubeVAO);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, cubeTexture);
@@ -195,8 +195,8 @@ int main()
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // scaled cubes
-        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-        glStencilMask(0x00);
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF); // Render where ref value not equals 1
+        glStencilMask(0x00); // Disable writing when rendering scaled cubes
         glDisable(GL_DEPTH_TEST);
 
         shaderSingleColor.Bind();
@@ -215,7 +215,7 @@ int main()
         shaderSingleColor.SetMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
-
+        // Reset all stencil test configs
         glStencilMask(0xFF);
         glStencilFunc(GL_ALWAYS, 0, 0xFF);
         glEnable(GL_DEPTH_TEST);
