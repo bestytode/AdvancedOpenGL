@@ -35,9 +35,14 @@
     <ClCompile Include="src\depth_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\stencil_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\depth_test.vs" />
     <None Include="res\shaders\depth_test.fs" />
+    <None Include="res\shaders\stencil_test.fs" />
+    <None Include="res\shaders\stencil_test.vs" />
   </ItemGroup>
 </Project>
