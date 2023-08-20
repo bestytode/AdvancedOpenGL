@@ -158,63 +158,20 @@
     <ClInclude Include="src\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\blending.cpp" />
-    <ClCompile Include="src\depth_test.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\models\nanosuit.mtl" />
+    <None Include="res\shaders\blending.fs" />
+    <None Include="res\shaders\blending.vs" />
     <None Include="res\shaders\depth_test.fs" />
     <None Include="res\shaders\depth_test.vs" />
     <None Include="res\shaders\stencil_test.fs" />
     <None Include="res\shaders\stencil_test.vs" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\models\arm_dif.png" />
-    <Image Include="res\models\arm_showroom_ddn.png" />
-    <Image Include="res\models\arm_showroom_refl.png" />
-    <Image Include="res\models\arm_showroom_spec.png" />
-    <Image Include="res\models\back.jpg" />
-    <Image Include="res\models\body_dif.png" />
-    <Image Include="res\models\body_showroom_ddn.png" />
-    <Image Include="res\models\body_showroom_refl.png" />
-    <Image Include="res\models\body_showroom_spec.png" />
-    <Image Include="res\models\cell_arm_alpha.png" />
-    <Image Include="res\models\cell_body_alpha.png" />
-    <Image Include="res\models\cell_ddn.png" />
-    <Image Include="res\models\cell_hand_alpha.png" />
-    <Image Include="res\models\cell_helmet_alpha.png" />
-    <Image Include="res\models\cell_leg_alpha.png" />
-    <Image Include="res\models\front.jpg" />
-    <Image Include="res\models\glass_ddn.png" />
-    <Image Include="res\models\glass_dif.png" />
-    <Image Include="res\models\glass_refl.png" />
-    <Image Include="res\models\hand_dif.png" />
-    <Image Include="res\models\hand_showroom_ddn.png" />
-    <Image Include="res\models\hand_showroom_refl.png" />
-    <Image Include="res\models\hand_showroom_spec.png" />
-    <Image Include="res\models\helmet_diff.png" />
-    <Image Include="res\models\helmet_showroom_ddn.png" />
-    <Image Include="res\models\helmet_showroom_refl.png" />
-    <Image Include="res\models\helmet_showroom_spec.png" />
-    <Image Include="res\models\leg_dif.png" />
-    <Image Include="res\models\leg_showroom_ddn.png" />
-    <Image Include="res\models\leg_showroom_refl.png" />
-    <Image Include="res\models\leg_showroom_spec.png" />
-    <Image Include="res\textures\grass.png">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </Image>
+    <Image Include="res\textures\grass.png" />
+    <Image Include="res\textures\marble.jpg" />
+    <Image Include="res\textures\metal.png" />
   </ItemGroup>
   <ItemGroup>
-    <Object Include="res\models\bunny.obj" />
-    <Object Include="res\models\nanosuit.obj" />
+    <ClCompile Include="src\blending.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -36,17 +36,17 @@ int main()
     }
 
     glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     glewInit();
 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
-// ------------------------------------------------------------------
     float cubeVertices[] = {
         // positions          // texture Coords
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -166,20 +166,55 @@ int main()
         glm::vec3(0.5f, 0.0f, -0.6f)
     };
 
+    shader.Bind();
     shader.SetInt("texture1", 0);
     while (!glfwWindowShouldClose(window)) {
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
 
+        processInput(window);
 
+        glClearColor(0.5f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // draw objects
+        shader.Bind();
+        glm::mat4 projection = glm::perspective(glm::radians(camera.fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 view = camera.GetViewMatrix();
+        glm::mat4 model = glm::mat4(1.0f);
+        shader.SetMat4("projection", projection);
+        shader.SetMat4("view", view);
 
+        // cubes
+        glBindVertexArray(cubeVAO);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, cubeTexture);
+        model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+        shader.SetMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+        shader.SetMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
+        // floor
+        glBindVertexArray(planeVAO);
+        glBindTexture(GL_TEXTURE_2D, floorTexture);
+        model = glm::mat4(1.0f);
+        shader.SetMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
-
-
-
-
-
+        // vegetation
+        glBindVertexArray(transparentVAO);
+        glBindTexture(GL_TEXTURE_2D, transparentTexture);
+        for (unsigned int i = 0; i < vegetation.size(); i++) {
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, vegetation[i]);
+            shader.SetMat4("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+        }
     }
 
     // optional: de-allocate all resources once they've outlived their purpose:
@@ -271,7 +306,7 @@ unsigned int LoadTexture(char const* path)
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT); // for this tutorial: use GL_CLAMP_TO_EDGE to prevent semi-transparent borders. Due to interpolation it takes texels from next repeat 
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
