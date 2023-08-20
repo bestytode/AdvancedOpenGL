@@ -12,8 +12,8 @@ void processInput(GLFWwindow* window);
 unsigned int loadTexture(const std::string& path);
 
 // settings
-constexpr unsigned int SCR_WIDTH = 800;
-constexpr unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
 
 // camera
 Camera camera(0.0f, 0.0f, 3.0f);
@@ -50,8 +50,7 @@ int main()
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
-    if(glewInit() != GLEW_OK) 
-        std::cout << "failed to init glew\n";
+    glewInit();
 
     // configure global opengl state
     // -----------------------------
@@ -162,13 +161,16 @@ int main()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glBindVertexArray(0);
 
-    // Shader and texture configs
+    // load textures
+    // -------------
     unsigned int cubeTexture = loadTexture("res/textures/marble.jpg");
     unsigned int floorTexture = loadTexture("res/textures/metal.png");
     unsigned int transparentTexture = loadTexture("res/textures/grass.png");
 
     // transparent vegetation locations
-    std::vector<glm::vec3> vegetation = {
+    // --------------------------------
+    std::vector<glm::vec3> vegetation
+    {
         glm::vec3(-1.5f, 0.0f, -0.48f),
         glm::vec3(1.5f, 0.0f, 0.51f),
         glm::vec3(0.0f, 0.0f, 0.7f),
@@ -176,15 +178,27 @@ int main()
         glm::vec3(0.5f, 0.0f, -0.6f)
     };
 
+    // shader configuration
+    // --------------------
     shader.Bind();
     shader.SetInt("texture1", 0);
-    while (!glfwWindowShouldClose(window)) {
+
+    // render loop
+    // -----------
+    while (!glfwWindowShouldClose(window))
+    {
+        // per-frame time logic
+        // --------------------
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
+        // input
+        // -----
         processInput(window);
 
+        // render
+        // ------
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -195,7 +209,6 @@ int main()
         glm::mat4 model = glm::mat4(1.0f);
         shader.SetMat4("projection", projection);
         shader.SetMat4("view", view);
-
         // cubes
         glBindVertexArray(cubeVAO);
         glActiveTexture(GL_TEXTURE0);
@@ -203,29 +216,30 @@ int main()
         model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
         shader.SetMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
         shader.SetMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-
         // floor
         glBindVertexArray(planeVAO);
         glBindTexture(GL_TEXTURE_2D, floorTexture);
         model = glm::mat4(1.0f);
         shader.SetMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 6);
-
         // vegetation
         glBindVertexArray(transparentVAO);
         glBindTexture(GL_TEXTURE_2D, transparentTexture);
-        for (unsigned int i = 0; i < vegetation.size(); i++) {
+        for (unsigned int i = 0; i < vegetation.size(); i++)
+        {
             model = glm::mat4(1.0f);
             model = glm::translate(model, vegetation[i]);
             shader.SetMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 6);
         }
 
+
+        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+        // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -238,8 +252,8 @@ int main()
     glDeleteBuffers(1, &planeVBO);
 
     glfwTerminate();
+    return 0;
 }
-
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------

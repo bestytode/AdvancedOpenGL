@@ -40,17 +40,6 @@
     <None Include="res\shaders\blending.fs" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\textures\grass.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\textures\marble.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\textures\metal.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\blending.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

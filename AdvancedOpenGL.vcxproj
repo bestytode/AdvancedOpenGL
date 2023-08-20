@@ -166,11 +166,6 @@
     <None Include="res\shaders\stencil_test.vs" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\textures\grass.png" />
-    <Image Include="res\textures\marble.jpg" />
-    <Image Include="res\textures\metal.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\blending.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
