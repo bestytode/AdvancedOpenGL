@@ -168,7 +168,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\models\nanosuit.mtl" />
-    <None Include="res\models\nanosuit.rar" />
     <None Include="res\shaders\depth_test.fs" />
     <None Include="res\shaders\depth_test.vs" />
     <None Include="res\shaders\stencil_test.fs" />
@@ -206,6 +205,12 @@
     <Image Include="res\models\leg_showroom_ddn.png" />
     <Image Include="res\models\leg_showroom_refl.png" />
     <Image Include="res\models\leg_showroom_spec.png" />
+    <Image Include="res\textures\grass.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Object Include="res\models\bunny.obj" />

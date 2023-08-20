@@ -45,7 +45,6 @@
     <None Include="res\shaders\stencil_test.fs" />
     <None Include="res\shaders\stencil_test.vs" />
     <None Include="res\models\nanosuit.mtl" />
-    <None Include="res\models\nanosuit.rar" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\models\arm_dif.png">
@@ -139,6 +138,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\models\leg_showroom_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\grass.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
