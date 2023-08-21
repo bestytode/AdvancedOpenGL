@@ -1,3 +1,4 @@
+#include <map>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -57,7 +58,8 @@ int main()
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
-
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     // build and compile shaders
    // -------------------------
     Shader shader("res/shaders/blending.vs", "res/shaders/blending.fs");
@@ -169,10 +171,10 @@ int main()
     // texture configs
     unsigned int cubeTexture = loadTexture("res/textures/marble.jpg");
     unsigned int floorTexture = loadTexture("res/textures/metal.png");
-    unsigned int transparentTexture = loadTexture("res/textures/grass.png");
+    unsigned int transparentTexture = loadTexture("res/textures/window.png");
 
-    // transparent vegetation locations
-    std::vector<glm::vec3> vegetation = {
+    // transparent window locations
+    std::vector<glm::vec3> windows = {
         glm::vec3(-1.5f, 0.0f, -0.48f),
         glm::vec3(1.5f, 0.0f, 0.51f),
         glm::vec3(0.0f, 0.0f, 0.7f),
@@ -191,6 +193,14 @@ int main()
         lastFrame = currentFrame;
 
         processInput(window);
+
+        // sort the transparent windows before rendering
+        // ---------------------------------------------
+        std::map<float, glm::vec3> sorted;
+        for (size_t i = 0; i < windows.size(); i++) {
+            float distance = glm::length(camera.position - windows[i]);
+            sorted[distance] = windows[i];
+        }
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -223,12 +233,12 @@ int main()
         shader.SetMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        // vegetation
+        // windows
         glBindVertexArray(transparentVAO);
         glBindTexture(GL_TEXTURE_2D, transparentTexture);
-        for (unsigned int i = 0; i < vegetation.size(); i++) {
+        for (std::map<float, glm::vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
             model = glm::mat4(1.0f);
-            model = glm::translate(model, vegetation[i]);
+            model = glm::translate(model, it->second);
             shader.SetMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 6);
         }
