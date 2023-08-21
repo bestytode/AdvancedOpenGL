@@ -10,6 +10,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 unsigned int loadTexture(const std::string& path);
+void RenderSphere();
 
 // settings
 constexpr unsigned int SCR_WIDTH = 800;
@@ -33,7 +34,7 @@ int main()
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "HNZZ", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -178,7 +179,10 @@ int main()
 
     shader.Bind();
     shader.SetInt("texture1", 0);
+
+    // Rendering loop
     while (!glfwWindowShouldClose(window)) {
+
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -240,6 +244,86 @@ int main()
     glfwTerminate();
 }
 
+void RenderSphere()
+{
+    static unsigned int sphereVAO = 0;
+    static unsigned int sphereVBO, sphereEBO;
+
+    // Preventing redefinition
+    if (sphereVAO == 0) {
+        glGenVertexArrays(1, &sphereVAO);
+
+        glGenBuffers(1, &sphereVBO);
+        glGenBuffers(1, &sphereEBO);
+
+        std::vector<float> vertices;
+        std::vector<unsigned int> indices;
+
+        const unsigned int X_SEGMENTS = 64;
+        const unsigned int Y_SEGMENTS = 64;
+        const float PI = 3.14159265359;
+        float radius = 2.0f;
+        for (unsigned int y = 0; y <= Y_SEGMENTS; ++y) {
+            for (unsigned int x = 0; x <= X_SEGMENTS; ++x) {
+                float xSegment = (float)x / (float)X_SEGMENTS;
+                float ySegment = (float)y / (float)Y_SEGMENTS;
+
+                float xPos = radius * std::cos(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
+                float yPos = radius * std::cos(ySegment * PI);
+                float zPos = radius * std::sin(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
+
+                // Normalizing the normal
+                float norm = std::sqrt(xPos * xPos + yPos * yPos + zPos * zPos);
+
+                vertices.push_back(xPos); // Position
+                vertices.push_back(yPos);
+                vertices.push_back(zPos);
+                vertices.push_back(xPos / norm); // Normal
+                vertices.push_back(yPos / norm);
+                vertices.push_back(zPos / norm);
+                vertices.push_back(xSegment); // UV coords
+                vertices.push_back(ySegment);
+            }
+        }
+
+        bool oddRow = false;
+        for (unsigned int y = 0; y < Y_SEGMENTS; ++y) {
+            if (!oddRow) {
+                // even rows: y == 0, y == 2; and so on 
+                for (unsigned int x = 0; x <= X_SEGMENTS; ++x) {
+                    indices.push_back(y * (X_SEGMENTS + 1) + x);
+                    indices.push_back((y + 1) * (X_SEGMENTS + 1) + x);
+                }
+            }
+            else {
+                for (int x = X_SEGMENTS; x >= 0; --x) {
+                    indices.push_back((y + 1) * (X_SEGMENTS + 1) + x);
+                    indices.push_back(y * (X_SEGMENTS + 1) + x);
+                }
+            }
+            oddRow = !oddRow;
+        }
+
+        glBindVertexArray(sphereVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, sphereVBO);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphereEBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+        glBindVertexArray(0);
+    }
+
+    glBindVertexArray(sphereVAO);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glDrawElements(GL_TRIANGLE_STRIP, (64 + 1) * 64 * 2, GL_UNSIGNED_INT, 0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glBindVertexArray(0);
+}
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
@@ -319,7 +403,7 @@ unsigned int loadTexture(const std::string& path)
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT); // for this tutorial: use GL_CLAMP_TO_EDGE to prevent semi-transparent borders. Due to interpolation it takes texels from next repeat 
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT); 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
