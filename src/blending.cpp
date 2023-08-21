@@ -195,8 +195,8 @@ int main()
         processInput(window);
 
         // sort the transparent windows before rendering
-        // ---------------------------------------------
-        std::map<float, glm::vec3> sorted;
+        // potential flaw here: if there were 2 distances are the same
+        std::map<float, glm::vec3, std::greater<float>> sorted;
         for (size_t i = 0; i < windows.size(); i++) {
             float distance = glm::length(camera.position - windows[i]);
             sorted[distance] = windows[i];
@@ -236,7 +236,7 @@ int main()
         // windows
         glBindVertexArray(transparentVAO);
         glBindTexture(GL_TEXTURE_2D, transparentTexture);
-        for (std::map<float, glm::vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
+        for (auto it = sorted.cbegin(); it != sorted.cend(); ++it) {
             model = glm::mat4(1.0f);
             model = glm::translate(model, it->second);
             shader.SetMat4("model", model);
