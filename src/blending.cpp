@@ -1,3 +1,19 @@
+// Notes:
+//
+// When drawing a scene with non-transparent and transparent objects the general outline is usually as follows:
+// 1. Draw all opaque objects first.
+// 2. Sort all the transparent objects.
+// 3. Draw all the transparent objects in sorted order.
+//
+// While this approach of sorting the objects by their DISTANCE works well for this specific scenario, 
+// it doesn't take rotations, scaling or any other transformation into account and weirdly shaped objects.
+// They definitely need a different metric than simply a position vector.
+//
+// Sorting objects in the scene is a difficult feat that depends greatly on the type of scene, 
+// Completely rendering a scene with solid and transparent objects isn't all that easy. 
+// There are more advanced techniques like order independent transparency but these are out of the scope. 
+// Be careful and know the limitations you can get pretty decent blending implementations.
+
 #include <map>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
