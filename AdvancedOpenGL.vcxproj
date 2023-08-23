@@ -162,11 +162,15 @@
     <None Include="res\shaders\blending.vs" />
     <None Include="res\shaders\depth_test.fs" />
     <None Include="res\shaders\depth_test.vs" />
+    <None Include="res\shaders\framebuffer.fs" />
+    <None Include="res\shaders\framebuffer.vs" />
+    <None Include="res\shaders\framebuffer_screen.fs" />
+    <None Include="res\shaders\framebuffer_screen.vs" />
     <None Include="res\shaders\stencil_test.fs" />
     <None Include="res\shaders\stencil_test.vs" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\blending.cpp" />
+    <ClCompile Include="src\framebuffer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

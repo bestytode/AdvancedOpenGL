@@ -38,9 +38,13 @@
     <None Include="res\shaders\stencil_test.vs" />
     <None Include="res\shaders\blending.vs" />
     <None Include="res\shaders\blending.fs" />
+    <None Include="res\shaders\framebuffer.vs" />
+    <None Include="res\shaders\framebuffer.fs" />
+    <None Include="res\shaders\framebuffer_screen.vs" />
+    <None Include="res\shaders\framebuffer_screen.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\blending.cpp">
+    <ClCompile Include="src\framebuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
