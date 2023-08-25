@@ -42,9 +42,13 @@
     <None Include="res\shaders\framebuffer.fs" />
     <None Include="res\shaders\framebuffer_screen.vs" />
     <None Include="res\shaders\framebuffer_screen.fs" />
+    <None Include="res\shaders\cubemap.vs" />
+    <None Include="res\shaders\cubemap.fs" />
+    <None Include="res\shaders\skybox.vs" />
+    <None Include="res\shaders\skybox.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\framebuffer.cpp">
+    <ClCompile Include="src\cube_map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
