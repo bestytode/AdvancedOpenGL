@@ -10,7 +10,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void ProcessInput(GLFWwindow* window);
 unsigned int LoadTexture(const std::string& path);
-unsigned int LoadCubemap(std::vector<std::string> faces);
+unsigned int LoadCubemap(const std::vector<std::string>& faces);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -359,7 +359,7 @@ unsigned int LoadTexture(const std::string& path)
 // +Z (front) 
 // -Z (back)
 // -------------------------------------------------------
-unsigned int LoadCubemap(std::vector<std::string> faces)
+unsigned int LoadCubemap(const std::vector<std::string>& faces)
 {
     unsigned int textureID;
     glGenTextures(1, &textureID);
