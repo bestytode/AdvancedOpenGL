@@ -10,5 +10,5 @@ void main()
 {
     TexCoords = aPos;
     vec4 pos = projection * view * vec4(aPos, 1.0);
-    gl_Position = pos.xyww;
+    gl_Position = pos.xyww; // this will ensure z value (depth value)after projection always be 1.0f
 }  

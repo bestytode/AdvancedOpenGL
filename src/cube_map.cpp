@@ -214,7 +214,7 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // draw scene as normal
+        // 1. draw scene as normal
         shader.Bind();
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = camera.GetViewMatrix();
@@ -229,10 +229,10 @@ int main()
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
 
-        // draw skybox as last
+        // 2. draw skybox as last
         glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
         skyboxShader.Bind();
-        view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
+        view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // Important: remove translation from the view matrix
         skyboxShader.SetMat4("view", view);
         skyboxShader.SetMat4("projection", projection);
         // skybox cube
@@ -363,13 +363,23 @@ unsigned int LoadCubemap(const std::vector<std::string>& faces)
 {
     unsigned int textureID;
     glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID); // Notice we bind to texture_cube_map instead of texture_2D
 
     int width, height, nrChannels;
-    for (unsigned int i = 0; i < faces.size(); i++) {
+    for (unsigned int i = 0; i < 6; i++) {
         unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
         if (data) {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            GLenum format = GL_RED;
+            if (nrChannels == 1)
+                format = GL_RED;
+            else if (nrChannels == 3)
+                format = GL_RGB;
+            else if (nrChannels == 4)
+                format = GL_RGBA;
+
+            // texture_cube_map_positve & negative x, y and z are the 6 faces one cube have, 
+            // they are linearly incremented.
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
             stbi_image_free(data);
         }
         else {
