@@ -46,6 +46,7 @@ int main()
         if (glewInit() != GLEW_OK)
             throw std::runtime_error("failed to init glew");
 
+        // global opengl configs
         glEnable(GL_DEPTH_TEST);
     }
     catch (const std::runtime_error& e) {
@@ -54,13 +55,12 @@ int main()
     }
 
     // build and compile shaders
-    // -------------------------
     Shader shader("res/shaders/cubemap.vs", "res/shaders/cubemap.fs");
     Shader skyboxShader("res/shaders/skybox.vs", "res/shaders/skybox.fs");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
-    // ------------------------------------------------------------------
     float vertices[] = {
+        // positions          // Normal
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
          0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
          0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
@@ -171,12 +171,10 @@ int main()
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-
     // load model
     Model ourModel("res/models/nanosuit.obj");
     
     // load textures
-    // -------------
     unsigned int cubeTexture = LoadTexture("res/textures/container.jpg");
 
     std::vector<std::string> faces = {
@@ -189,31 +187,25 @@ int main()
     };
     unsigned int cubemapTexture = LoadCubemap(faces);
 
-    // shader configuration
-    // --------------------
+    // shader configs
     shader.Bind();
     shader.SetInt("texture1", 0);
 
     skyboxShader.Bind();
     skyboxShader.SetInt("skybox", 0);
 
-
     // render loop
-    // -----------
     while (!glfwWindowShouldClose(window))
     {
         // per-frame time logic
-        // --------------------
         float currentFrame = (float)glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
         // input
-        // -----
         ProcessInput(window);
 
         // render
-        // ------
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -239,27 +231,27 @@ int main()
         glBindVertexArray(0);
 
         // 3. draw skybox as last
-        glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+        glDepthFunc(GL_LEQUAL);  // since we manually set depth value to 1.0f here
         skyboxShader.Bind();
         view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // Important: remove translation from the view matrix
+        model = glm::mat4(1.0f);
         skyboxShader.SetMat4("view", view);
         skyboxShader.SetMat4("projection", projection);
-        // skybox cube
+        skyboxShader.SetMat4("model", model);
+
         glBindVertexArray(skyboxVAO);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
-        glDepthFunc(GL_LESS); // set depth function back to default
+        glDepthFunc(GL_LESS); // don't forget to return default
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
     // optional: de-allocate all resources once they've outlived their purpose:
-    // ------------------------------------------------------------------------
     glDeleteVertexArrays(1, &cubeVAO);
     glDeleteVertexArrays(1, &skyboxVAO);
     glDeleteBuffers(1, &cubeVBO);
@@ -267,6 +259,7 @@ int main()
 
     glfwTerminate();
 }
+
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
 void ProcessInput(GLFWwindow* window)

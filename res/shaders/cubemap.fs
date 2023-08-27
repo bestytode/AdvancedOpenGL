@@ -9,7 +9,8 @@ uniform vec3 cameraPos;
 
 void main()
 {    
+    float ior = 1.0f/ 1.52f;
     vec3 I = normalize(FragPos - cameraPos);
-    vec3 R = normalize(reflect(Normal, I));
+    vec3 R = refract(I, normalize(Normal), ior);
     FragColor = vec4(texture(skybox, R).rgb, 1.0f);
 }
