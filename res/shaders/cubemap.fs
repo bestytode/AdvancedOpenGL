@@ -12,5 +12,6 @@ void main()
     float ior = 1.0f/ 1.52f;
     vec3 I = normalize(FragPos - cameraPos);
     vec3 R = refract(I, normalize(Normal), ior);
-    FragColor = vec4(texture(skybox, R).rgb, 1.0f);
+    vec3 color = texture(skybox, R).rgb;
+    FragColor = vec4(color, 1.0f);
 }
