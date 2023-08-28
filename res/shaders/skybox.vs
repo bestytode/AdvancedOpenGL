@@ -11,5 +11,8 @@ void main()
 {
     TexCoords = aPos;
     vec4 pos = projection * view * model * vec4(aPos, 1.0);
-    gl_Position = pos.xyww; // this will ensure z value (depth value)after projection always be 1.0f
+
+    // this will ensure z value (depth value)after projection always be 1.0f
+    // we can also manually set gl_FragDepth to 1.0f in fragment shader
+    gl_Position = pos.xyww; 
 }  
