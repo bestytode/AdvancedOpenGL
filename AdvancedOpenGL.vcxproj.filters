@@ -46,11 +46,13 @@
     <None Include="res\shaders\cubemap.fs" />
     <None Include="res\shaders\skybox.vs" />
     <None Include="res\shaders\skybox.fs" />
+    <None Include="res\shaders\advanced_glsl.vs" />
+    <None Include="res\shaders\red.fs" />
+    <None Include="res\shaders\green.fs" />
+    <None Include="res\shaders\blue.fs" />
+    <None Include="res\shaders\yellow.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\cube_map.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\advanced_glsl_ubo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

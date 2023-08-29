@@ -158,8 +158,10 @@
     <ClInclude Include="src\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shaders\advanced_glsl.vs" />
     <None Include="res\shaders\blending.fs" />
     <None Include="res\shaders\blending.vs" />
+    <None Include="res\shaders\blue.fs" />
     <None Include="res\shaders\cubemap.fs" />
     <None Include="res\shaders\cubemap.vs" />
     <None Include="res\shaders\depth_test.fs" />
@@ -168,14 +170,16 @@
     <None Include="res\shaders\framebuffer.vs" />
     <None Include="res\shaders\framebuffer_screen.fs" />
     <None Include="res\shaders\framebuffer_screen.vs" />
+    <None Include="res\shaders\green.fs" />
+    <None Include="res\shaders\red.fs" />
     <None Include="res\shaders\skybox.fs" />
     <None Include="res\shaders\skybox.vs" />
     <None Include="res\shaders\stencil_test.fs" />
     <None Include="res\shaders\stencil_test.vs" />
+    <None Include="res\shaders\yellow.fs" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\advanced_glsl_ubo.cpp" />
-    <ClCompile Include="src\cube_map.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
