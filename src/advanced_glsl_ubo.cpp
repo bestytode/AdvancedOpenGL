@@ -141,8 +141,8 @@ int main()
     glm::mat4 projection = glm::perspective(45.0f, (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
     glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
     glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
-
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
     // render loop
     while (!glfwWindowShouldClose(window)) {
         // per-frame time logic
