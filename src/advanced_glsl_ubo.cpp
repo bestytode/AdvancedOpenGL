@@ -117,26 +117,23 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
     // configure a uniform buffer object
-    // 1. Get the uniform block indices
-    unsigned int uniformBlockIndexRed = glGetUniformBlockIndex(shaderRed.GetID(), "Matrices");
-    unsigned int uniformBlockIndexGreen = glGetUniformBlockIndex(shaderGreen.GetID(), "Matrices");
-    unsigned int uniformBlockIndexBlue = glGetUniformBlockIndex(shaderBlue.GetID(), "Matrices");
-    unsigned int uniformBlockIndexYellow = glGetUniformBlockIndex(shaderYellow.GetID(), "Matrices");
-    // 2. link each shader's uniform block to this uniform binding point
-    glUniformBlockBinding(shaderRed.GetID(), uniformBlockIndexRed, 0);
-    glUniformBlockBinding(shaderGreen.GetID(), uniformBlockIndexGreen, 0);
-    glUniformBlockBinding(shaderBlue.GetID(), uniformBlockIndexBlue, 0);
-    glUniformBlockBinding(shaderYellow.GetID(), uniformBlockIndexYellow, 0);
-    // 3. create & fill the buffer
+    // 1. Link uniform blocks in shaders to a common binding point (0 in this case)
+    shaderRed.BindUniformBlock("Matrices", 0);
+    shaderGreen.BindUniformBlock("Matrices", 0);
+    shaderBlue.BindUniformBlock("Matrices", 0);
+    shaderYellow.BindUniformBlock("Matrices", 0);
+
+    // 2. Generate and initialize a UBO to hold two 4x4 matrices
     unsigned int uboMatrices;
     glGenBuffers(1, &uboMatrices);
     glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-    glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), nullptr, GL_STATIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
-    // 4. link to a uniform binding point
+
+    // 4. Bind the UBO to the uniform binding point 0
     glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2 * sizeof(glm::mat4));
 
-    // 5. update the ubo (note: we're not using zoom anymore by changing the FoV)
+    // 5. Update the matrix in the UBO
     glm::mat4 projection = glm::perspective(45.0f, (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
     glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
     glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
@@ -156,7 +153,7 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // set the view and projection matrix in the uniform block - we only have to do this once per loop iteration.
+        // 5. Update the matrix in the UBO
         glm::mat4 view = camera.GetViewMatrix();
         glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
         glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
@@ -200,6 +197,7 @@ int main()
     // optional: de-allocate all resources once they've outlived their purpose:
     glDeleteVertexArrays(1, &cubeVAO);
     glDeleteBuffers(1, &cubeVBO);
+    glDeleteBuffers(1, &uboMatrices);
 
     glfwTerminate();
 }

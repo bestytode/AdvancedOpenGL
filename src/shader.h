@@ -75,6 +75,18 @@ public:
 		glUniform1i(glGetUniformLocation(m_rendererID, _name.c_str()), _value);
 	}
 
+	void BindUniformBlock(const std::string& uniformBlockName, unsigned int bindingPoint)
+	{
+		unsigned int blockIndex = glGetUniformBlockIndex(m_rendererID, uniformBlockName.c_str());
+
+#ifdef _DEBUG
+		if (blockIndex == GL_INVALID_INDEX) {
+			std::cerr << "Warning: Uniform block \"" << uniformBlockName << "\" not found in shader.\n";
+		}
+#endif
+
+		glUniformBlockBinding(m_rendererID, blockIndex, bindingPoint);
+	}
 private:
 	unsigned int CompileShader(unsigned int type, const std::string& source)
 	{
