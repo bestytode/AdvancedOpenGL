@@ -117,27 +117,26 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
     // configure a uniform buffer object
-// ---------------------------------
-// first. We get the relevant block indices
+    // 1. Get the uniform block indices
     unsigned int uniformBlockIndexRed = glGetUniformBlockIndex(shaderRed.GetID(), "Matrices");
     unsigned int uniformBlockIndexGreen = glGetUniformBlockIndex(shaderGreen.GetID(), "Matrices");
     unsigned int uniformBlockIndexBlue = glGetUniformBlockIndex(shaderBlue.GetID(), "Matrices");
     unsigned int uniformBlockIndexYellow = glGetUniformBlockIndex(shaderYellow.GetID(), "Matrices");
-    // then we link each shader's uniform block to this uniform binding point
+    // 2. link each shader's uniform block to this uniform binding point
     glUniformBlockBinding(shaderRed.GetID(), uniformBlockIndexRed, 0);
     glUniformBlockBinding(shaderGreen.GetID(), uniformBlockIndexGreen, 0);
     glUniformBlockBinding(shaderBlue.GetID(), uniformBlockIndexBlue, 0);
     glUniformBlockBinding(shaderYellow.GetID(), uniformBlockIndexYellow, 0);
-    // Now actually create the buffer
+    // 3. create & fill the buffer
     unsigned int uboMatrices;
     glGenBuffers(1, &uboMatrices);
     glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
     glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
-    // define the range of the buffer that links to a uniform binding point
+    // 4. link to a uniform binding point
     glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2 * sizeof(glm::mat4));
 
-    // store the projection matrix (we only do this once now) (note: we're not using zoom anymore by changing the FoV)
+    // 5. update the ubo (note: we're not using zoom anymore by changing the FoV)
     glm::mat4 projection = glm::perspective(45.0f, (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
     glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
     glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
