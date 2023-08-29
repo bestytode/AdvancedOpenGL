@@ -87,6 +87,7 @@ public:
 
 		glUniformBlockBinding(m_rendererID, blockIndex, bindingPoint);
 	}
+
 private:
 	unsigned int CompileShader(unsigned int type, const std::string& source)
 	{
