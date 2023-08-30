@@ -54,40 +54,36 @@ int main()
 		return -1;
 	}
 
-	// set up vertex data (and buffer(s)) and configure vertex attributes
-	float points[] = {
-		-0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // top-left
-		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // top-right
-		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // bottom-right
-		-0.5f, -0.5f, 1.0f, 1.0f, 0.0f  // bottom-left
-	};
-	unsigned int VBO, VAO;
-	glGenBuffers(1, &VBO);
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(points), &points, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(2 * sizeof(float)));
-	glBindVertexArray(0);
-
 	// Build & compile shaders
 	Shader shader("res/shaders/geometry_shader.vs", "res/shaders/geometry_shader.fs", "res/shaders/geometry_shader.gs");
 
+	// Load model
+	Model ourModel("res/models/nanosuit.obj");
+
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	// render loop
 	while (!glfwWindowShouldClose(window)) {
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
 		// render
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		ProcessInput(window);
 
-		// draw points
+		// draw 
+		glm::mat4 projection = glm::perspective(camera.fov, (float)SCR_WIDTH / (float)SCR_HEIGHT, 1.0f, 100.0f);
+		glm::mat4 view = camera.GetViewMatrix();;
+		glm::mat4 model = glm::mat4(1.0f);
 		shader.Bind();
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_POINTS, 0, 4);
+		shader.SetFloat("time", glfwGetTime());
+		shader.SetMat4("projection", projection);
+		shader.SetMat4("view", view);
+		shader.SetMat4("model", model);
+
+		ourModel.Draw(shader);
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
@@ -95,8 +91,6 @@ int main()
 	}
 
 	// optional: de-allocate all resources once they've outlived their purpose:
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
 
 	glfwTerminate();
 }
