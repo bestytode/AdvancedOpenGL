@@ -53,7 +53,7 @@
     <None Include="res\shaders\yellow.fs" />
     <None Include="res\shaders\geometry_shader.vs" />
     <None Include="res\shaders\geometry_shader.fs" />
-    <None Include="res\shaders\geometryshader.gs" />
+    <None Include="res\shaders\geometry_shader.gs" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\geometry_shader.cpp">

@@ -170,7 +170,7 @@
     <None Include="res\shaders\framebuffer.vs" />
     <None Include="res\shaders\framebuffer_screen.fs" />
     <None Include="res\shaders\framebuffer_screen.vs" />
-    <None Include="res\shaders\geometryshader.gs" />
+    <None Include="res\shaders\geometry_shader.gs" />
     <None Include="res\shaders\geometry_shader.fs" />
     <None Include="res\shaders\geometry_shader.vs" />
     <None Include="res\shaders\green.fs" />
