@@ -17,6 +17,7 @@ vec4 explode(vec4 position, vec3 normal)
     return position + vec4(direction, 0.0);
 }
 
+// Calculate normal 
 vec3 GetNormal()
 {
     vec3 a = vec3(gl_in[0].gl_Position) - vec3(gl_in[1].gl_Position);
@@ -28,14 +29,10 @@ void main()
 {
     vec3 normal = GetNormal();
 
-    gl_Position = explode(gl_in[0].gl_Position, normal);
-    TexCoords = gs_in[0].texCoords;
-    EmitVertex();
-    gl_Position = explode(gl_in[1].gl_Position, normal);
-    TexCoords = gs_in[1].texCoords;
-    EmitVertex();
-    gl_Position = explode(gl_in[2].gl_Position, normal);
-    TexCoords = gs_in[2].texCoords;
-    EmitVertex();
+    for (int i = 0; i < 3; i++) {
+        gl_Position = explode(gl_in[i].gl_Position, normal);
+        TexCoords = gs_in[i].texCoords;
+        EmitVertex();
+    }
     EndPrimitive();
 }
