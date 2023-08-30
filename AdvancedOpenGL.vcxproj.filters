@@ -51,9 +51,12 @@
     <None Include="res\shaders\green.fs" />
     <None Include="res\shaders\blue.fs" />
     <None Include="res\shaders\yellow.fs" />
+    <None Include="res\shaders\geometry_shader.vs" />
+    <None Include="res\shaders\geometry_shader.fs" />
+    <None Include="res\shaders\geometryshader.gs" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\advanced_glsl_ubo.cpp">
+    <ClCompile Include="src\geometry_shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
