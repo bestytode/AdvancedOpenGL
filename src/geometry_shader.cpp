@@ -55,8 +55,8 @@ int main()
 	}
 
 	// Build & compile shaders
-	Shader shader("res/shaders/geometry_shader.vs", "res/shaders/geometry_shader.fs", "res/shaders/geometry_shader.gs");
-
+	Shader shader("res/shaders/normal_visualization_default.vs", "res/shaders/normal_visualization_default.fs");
+	Shader normalShader("res/shaders/normal_visualization.vs", "res/shaders/normal_visualization.fs", "res/shaders/normal_visualization.gs");
 	// Load model
 	Model ourModel("res/models/nanosuit.obj");
 
@@ -73,10 +73,13 @@ int main()
 
 		ProcessInput(window);
 
-		// draw 
+		// draw model
 		glm::mat4 projection = glm::perspective(camera.fov, (float)SCR_WIDTH / (float)SCR_HEIGHT, 1.0f, 100.0f);
 		glm::mat4 view = camera.GetViewMatrix();;
 		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.2f));
+
 		shader.Bind();
 		shader.SetFloat("time", glfwGetTime());
 		shader.SetMat4("projection", projection);
@@ -85,6 +88,13 @@ int main()
 
 		ourModel.Draw(shader);
 
+		// draw normals
+		normalShader.Bind();
+		normalShader.SetMat4("projection", projection);
+		normalShader.SetMat4("view", view);
+		normalShader.SetMat4("model", model);
+
+		ourModel.Draw(normalShader);
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
 		glfwPollEvents();
