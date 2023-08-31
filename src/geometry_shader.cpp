@@ -77,7 +77,7 @@ int main()
 		glm::mat4 projection = glm::perspective(camera.fov, (float)SCR_WIDTH / (float)SCR_HEIGHT, 1.0f, 100.0f);
 		glm::mat4 view = camera.GetViewMatrix();;
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
+		//model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
 		//model = glm::scale(model, glm::vec3(0.2f));
 
 		shader.Bind();
