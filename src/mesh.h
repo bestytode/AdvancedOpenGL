@@ -58,7 +58,7 @@ Mesh::Mesh(const std::vector<Vertex>& _vertices,
 void Mesh::Draw(Shader& shader) const
 {
 	// Start from material.diffuse1 or material.specular1
-	size_t diffuseNr = 1, specularNr = 1;
+	size_t diffuseNr = 1, specularNr = 1, normalNr = 1, heightNr = 1;
 
 	for (size_t i = 0; i < textures.size(); i++) {
 		glActiveTexture(GL_TEXTURE0 + i); 
@@ -69,6 +69,10 @@ void Mesh::Draw(Shader& shader) const
 			number = std::to_string(diffuseNr++);
 		else if (name == "texture_specular")
 			number = std::to_string(specularNr++);
+		else if (name == "texture_normal")
+			number = std::to_string(normalNr++);
+		else if (name == "texture_height")
+			number = std::to_string(heightNr++);
 
 		shader.SetInt((name + number).c_str(), i);
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);

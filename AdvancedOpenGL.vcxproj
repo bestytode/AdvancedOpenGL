@@ -174,8 +174,8 @@
     <None Include="res\shaders\geometry_shader.fs" />
     <None Include="res\shaders\geometry_shader.vs" />
     <None Include="res\shaders\green.fs" />
-    <None Include="res\shaders\instantiation.fs" />
-    <None Include="res\shaders\instantiation.vs" />
+    <None Include="res\shaders\instancing_mars.fs" />
+    <None Include="res\shaders\instancing.vs" />
     <None Include="res\shaders\normal_visualization_default.fs" />
     <None Include="res\shaders\normal_visualization_default.vs" />
     <None Include="res\shaders\red.fs" />
@@ -183,10 +183,11 @@
     <None Include="res\shaders\skybox.vs" />
     <None Include="res\shaders\stencil_test.fs" />
     <None Include="res\shaders\stencil_test.vs" />
+    <None Include="res\shaders\instancing_rock.fs" />
     <None Include="res\shaders\yellow.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\instantiation.cpp" />
+    <ClCompile Include="src\instancing.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
