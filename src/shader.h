@@ -47,44 +47,79 @@ public:
 
 	void SetVec3(const std::string& _name, const glm::vec3& value)
 	{
-		auto location = glGetUniformLocation(m_rendererID, _name.c_str());
+		GLint location = glGetUniformLocation(m_rendererID, _name.c_str());
+#ifdef _DEBUG
+		if (location == -1) {
+			std::cerr << "Warning: Uniform '" << _name << "' not found or shader program not linked.\n";
+		}
+#endif
 		glUniform3fv(location, 1, &value[0]);
 	}
 
-	void SetVec3(const std::string& _name, const float _x, const float _y, const float _z)
+	void SetVec3(const std::string& _name, float _x, float _y, float _z)
 	{
 		glm::vec3 value(_x, _y, _z);
-		auto location = glGetUniformLocation(m_rendererID, _name.c_str());
+		GLint location = glGetUniformLocation(m_rendererID, _name.c_str());
+#ifdef _DEBUG
+		if (location == -1) {
+			std::cerr << "Warning: Uniform '" << _name << "' not found or shader program not linked.\n";
+		}
+#endif
 		glUniform3fv(location, 1, &value[0]);
+	}
+
+	void SetVec2(const std::string& _name, const glm::vec2& value)
+	{
+		GLint location = glGetUniformLocation(m_rendererID, _name.c_str());
+#ifdef _DEBUG
+		if (location == -1) {
+			std::cerr << "Warning: Uniform '" << _name << "' not found or shader program not linked.\n";
+		}
+#endif
+		glUniform2fv(location, 1, &value[0]);
 	}
 
 	void SetMat4(const std::string& _name, const glm::mat4& _mat)
 	{
-		auto location = glGetUniformLocation(m_rendererID, _name.c_str());
+		GLint location = glGetUniformLocation(m_rendererID, _name.c_str());
+#ifdef _DEBUG
+		if (location == -1) {
+			std::cerr << "Warning: Uniform '" << _name << "' not found or shader program not linked.\n";
+		}
+#endif
 		glUniformMatrix4fv(location, 1, GL_FALSE, &_mat[0][0]);
 	}
 
-	void SetFloat(const std::string& _name, const float _value)
+	void SetFloat(const std::string& _name, float _value)
 	{
-		auto location = glGetUniformLocation(m_rendererID, _name.c_str());
+		GLint location = glGetUniformLocation(m_rendererID, _name.c_str());
+#ifdef _DEBUG
+		if (location == -1) {
+			std::cerr << "Warning: Uniform '" << _name << "' not found or shader program not linked.\n";
+		}
+#endif
 		glUniform1f(location, _value);
 	}
 
-	void SetInt(const std::string& _name, const int _value) const
+	void SetInt(const std::string& _name, int _value) const
 	{
-		glUniform1i(glGetUniformLocation(m_rendererID, _name.c_str()), _value);
+		GLint location = glGetUniformLocation(m_rendererID, _name.c_str());
+#ifdef _DEBUG
+		if (location == -1) {
+			std::cerr << "Warning: Uniform '" << _name << "' not found or shader program not linked.\n";
+		}
+#endif
+		glUniform1i(location, _value);
 	}
 
 	void BindUniformBlock(const std::string& uniformBlockName, unsigned int bindingPoint)
 	{
 		unsigned int blockIndex = glGetUniformBlockIndex(m_rendererID, uniformBlockName.c_str());
-
 #ifdef _DEBUG
 		if (blockIndex == GL_INVALID_INDEX) {
 			std::cerr << "Warning: Uniform block \"" << uniformBlockName << "\" not found in shader.\n";
 		}
 #endif
-
 		glUniformBlockBinding(m_rendererID, blockIndex, bindingPoint);
 	}
 
