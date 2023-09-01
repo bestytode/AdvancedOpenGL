@@ -110,6 +110,7 @@ int main()
 	// Build & compile shader(s)
 	Shader marsShader("res/shaders/instancing.vs", "res/shaders/instancing_mars.fs");
 	Shader rockShader("res/shaders/instancing.vs", "res/shaders/instancing_rock.fs");
+
 	// generate a large list of semi-random model transformation matrices
 	unsigned int amount = 1000;
 	glm::mat4* modelMatrices = new glm::mat4[amount];
@@ -171,7 +172,6 @@ int main()
 		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
 		marsShader.SetMat4("model", model);
 		planet.Draw(marsShader);
-		marsShader.Unbind();
 
 		// draw rocks
 		rockShader.Bind();
@@ -181,7 +181,6 @@ int main()
 			rockShader.SetMat4("model", modelMatrices[i]);
 			rock.Draw(rockShader);
 		}
-		rockShader.Unbind();
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
