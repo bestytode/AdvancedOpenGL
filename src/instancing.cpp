@@ -124,7 +124,7 @@ int main()
 	float radius = 50.0f;
 	float offset = 2.5f;
 
-	for (unsigned int i = 0; i < amount; i++) {
+	for (size_t i = 0; i < amount; i++) {
 		glm::mat4 model = glm::mat4(1.0f);
 
 		// 1. translation, displace along circle with 'radius' in range [-offset, offset]
@@ -177,7 +177,7 @@ int main()
 		rockShader.Bind();
 		rockShader.SetMat4("projection", projection);
 		rockShader.SetMat4("view", view);
-		for (unsigned int i = 0; i < amount; i++) {
+		for (size_t i = 0; i < amount; i++) {
 			rockShader.SetMat4("model", modelMatrices[i]);
 			rock.Draw(rockShader);
 		}
