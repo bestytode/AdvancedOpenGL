@@ -105,7 +105,7 @@ int main()
 
 	// Load model
 	Model rock("res/models/rock/rock.obj");
-	Model planet("res/models/planet/planet.obj");
+	Model mars("res/models/planet/planet.obj");
 
 	// Build & compile shader(s)
 	Shader marsShader("res/shaders/instancing.vs", "res/shaders/instancing_mars.fs");
@@ -171,7 +171,7 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0f, -3.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
 		marsShader.SetMat4("model", model);
-		planet.Draw(marsShader);
+		mars.Draw(marsShader);
 
 		// draw rocks
 		rockShader.Bind();
