@@ -4,17 +4,16 @@ layout (line_strip, max_vertices = 6) out;
 
 in VS_OUT {
     vec3 normal;
+    vec4 transformedPos;
 } gs_in[];
 
 const float MAGNITUDE = 0.2;
 
-uniform mat4 projection;
-
 void GenerateLine(int index)
 {
-    gl_Position = projection * gl_in[index].gl_Position;
+    gl_Position = gs_in[index].transformedPos;
     EmitVertex();
-    gl_Position = projection * (gl_in[index].gl_Position + vec4(gs_in[index].normal, 0.0) * MAGNITUDE);
+    gl_Position = gs_in[index].transformedPos + vec4(gs_in[index].normal, 0.0) * MAGNITUDE;
     EmitVertex();
     EndPrimitive();
 }
