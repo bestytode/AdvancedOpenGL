@@ -113,14 +113,15 @@ int main()
 	}
 
 	int counter = 0;
-	const int maxPrintNumber = 30;
+	const int maxPrints = 30;
 	while (!glfwWindowShouldClose(window)) {
 		// Per-frame logic
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
-		if (counter < maxPrintNumber) {
-			std::cout << "Delta Time: " << deltaTime <<"\n";
+		if (counter < maxPrints) {
+			std::cout << "Delta Time: " << deltaTime << "\n";
+			std::cout << "fps: " << 1.0f / deltaTime << "\n";
 			counter++;
 		}
 		
