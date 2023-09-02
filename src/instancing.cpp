@@ -107,10 +107,10 @@ int main()
 
 	// Generate a random rotation speed array for rocks
 	float* rotationSpeeds = new float[amount];
-	for (size_t i = 0; i < amount; i++) {
-		std::uniform_real_distribution<float>angleDistribution(4.0f, 8.0f);
+	std::uniform_real_distribution<float>angleDistribution(4.0f, 8.0f);
+	for (size_t i = 0; i < amount; i++) 
 		rotationSpeeds[i] = angleDistribution(gen);  // Random rotation speed
-	}
+	
 
 	// configure instanced array
 	unsigned int buffer;
