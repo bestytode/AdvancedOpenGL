@@ -64,7 +64,7 @@ int main()
 
 	// Generate a large list of semi-random model transformation matrices
 	unsigned int amount = 10000;
-	glm::mat4* modelMatrices = new glm::mat4[amount];
+	glm::mat4* modelMatrices = new glm::mat4[amount]; // the actual data storing the model matrices
 	glm::vec3* axis = new glm::vec3[amount]; // Stores the rotation axis for each rock instance
 
 	std::random_device rd;
@@ -119,8 +119,7 @@ int main()
 	glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
 
 	// Loop through each mesh in the rock model
-	for (unsigned int i = 0; i < rock.meshes.size(); i++)
-	{
+	for (unsigned int i = 0; i < rock.meshes.size(); i++) {
 		// Bind the VAO of the current mesh
 		unsigned int VAO = rock.meshes[i].GetVAO();
 		glBindVertexArray(VAO);
