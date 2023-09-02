@@ -142,7 +142,8 @@ int main()
 
 		// 3. rotation (0 to 360)
 		float rotAngle = angleDis(gen);
-		model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
+		glm::vec3 randomAxis(axisDis(gen), axisDis(gen), axisDis(gen));
+		model = glm::rotate(model, glm::radians(rotAngle), glm::normalize(randomAxis));
 
 		// 4. add to list of matrices
 		modelMatrices[i] = model;
