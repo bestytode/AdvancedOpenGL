@@ -180,7 +180,7 @@ int main()
 		marsShader.SetMat4("projection", projection);
 		marsShader.SetMat4("view", view);
 		model = glm::translate(model, glm::vec3(0.0f, -3.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		model = glm::scale(model, glm::vec3(4.0f));
 		marsShader.SetMat4("model", model);
 		mars.Draw(marsShader);
 
