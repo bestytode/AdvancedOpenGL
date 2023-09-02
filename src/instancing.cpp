@@ -110,7 +110,6 @@ int main()
 	std::uniform_real_distribution<float>angleDistribution(4.0f, 8.0f);
 	for (size_t i = 0; i < amount; i++) 
 		rotationSpeeds[i] = angleDistribution(gen);  // Random rotation speed
-	
 
 	// configure instanced array
 	unsigned int buffer;
