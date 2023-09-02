@@ -171,6 +171,7 @@ int main()
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		// Process input
 		ProcessInput(window);
 
 		// Update the rotation of each rock around its own random axis at a random speed.
