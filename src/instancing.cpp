@@ -13,8 +13,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void ProcessInput(GLFWwindow* window);
 
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1600;
+const unsigned int SCR_HEIGHT = 1200;
 
 // camera
 Camera camera(glm::vec3(35.0f, 0.0f, 35.0f));
@@ -111,61 +111,83 @@ int main()
 	Shader marsShader("res/shaders/instancing.vs", "res/shaders/instancing_mars.fs");
 	Shader rockShader("res/shaders/instancing.vs", "res/shaders/instancing_rock.fs");
 
-	// generate a large list of semi-random model transformation matrices
+	// Generate a large list of semi-random model transformation matrices
 	unsigned int amount = 1000;
 	glm::mat4* modelMatrices = new glm::mat4[amount];
+	glm::vec3* axis = new glm::vec3[amount]; // Stores the rotation axis for each rock instance
 
 	std::random_device rd;
-	std::mt19937 gen(rd()); // Mersenne Twister generator
-	std::uniform_real_distribution<float> dis(-1.0, 1.0); 
-	std::uniform_real_distribution<float> scaleDis(0.05, 0.25); 
-	std::uniform_real_distribution<float> angleDis(0.0, 360.0); 
+	std::mt19937 gen(rd()); // Initialize Mersenne Twister random number generator
+	std::uniform_real_distribution<float> dis(-1.0, 1.0);
+	std::uniform_real_distribution<float> scaleDis(0.05, 0.25);
+	std::uniform_real_distribution<float> angleDis(0.0, 360.0);
+	std::uniform_real_distribution<float> axisDis(0.0, 1.0);
 
 	float radius = 50.0f;
-	float offset = 2.5f;
 
+	// Offset: Controls the random displacement of each rock. 
+    // Choose a rational range to minimize rock collisions.
+	float offset = 3.0f; 
+
+	// Loop to initialize each rock's model matrix
 	for (size_t i = 0; i < amount; i++) {
 		glm::mat4 model = glm::mat4(1.0f);
 
-		// 1. translation, displace along circle with 'radius' in range [-offset, offset]
+		// 1. Translation: Displace each rock along a circle with a radius and a random offset
 		float angle = (float)(i) / (float)(amount) * 360.0f;
-
-		// dis(gen) * offset stands for [-offset, offset]
 		float x = sin(angle) * radius + dis(gen) * offset;
 		float y = 0.4 * dis(gen) * offset;
 		float z = cos(angle) * radius + dis(gen) * offset;
 		model = glm::translate(model, glm::vec3(x, y, z));
 
-		// 2. scale (0.05 to 0.25)
+		// 2. Scaling: Randomly scale each rock
 		float scale = scaleDis(gen);
 		model = glm::scale(model, glm::vec3(scale));
 
-		// 3. rotation (0 to 360)
+		// 3. Rotation: Apply a random initial rotation around a random axis
 		float rotAngle = angleDis(gen);
 		glm::vec3 randomAxis(axisDis(gen), axisDis(gen), axisDis(gen));
-		model = glm::rotate(model, glm::radians(rotAngle), glm::normalize(randomAxis));
+		model = glm::rotate(model, glm::radians(rotAngle), randomAxis);
+		axis[i] = randomAxis; // Store this axis for later use
 
-		// 4. add to list of matrices
+		// 4. Store the model matrix
 		modelMatrices[i] = model;
 	}
 
+	// Generate a random rotation speed array for rocks
+	float* rotationSpeeds = new float[amount];
+	for (size_t i = 0; i < amount; i++) {
+		std::uniform_real_distribution<float>angleDistribution(4.0f, 8.0f);
+		rotationSpeeds[i] = angleDistribution(gen);  // Random rotation speed
+	}
+
 	while (!glfwWindowShouldClose(window)) {
+		// Per frame logic
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
-		// render
+		// Render
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		ProcessInput(window);
 
-		// configure transformation matrices
+		// Update the rotation of each rock around its own random axis at a random speed.
+		// Using deltaTime to ensure frame-rate independent rotation
+		for (unsigned int i = 0; i < amount; i++) {
+			glm::mat4 model = modelMatrices[i];
+			float angle = rotationSpeeds[i] * deltaTime;
+			model = glm::rotate(model, angle, axis[i]); // random angle & random axis
+			modelMatrices[i] = model;
+		}
+
+		// Configure transformation matrices
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
-		glm::mat4 view = camera.GetViewMatrix();;
+		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 model = glm::mat4(1.0f);
 
-		// draw planet(mars)
+		// Draw planet(mars)
 		marsShader.Bind();
 		marsShader.SetMat4("projection", projection);
 		marsShader.SetMat4("view", view);
@@ -174,7 +196,7 @@ int main()
 		marsShader.SetMat4("model", model);
 		mars.Draw(marsShader);
 
-		// draw rocks
+		// Draw amount of rocks
 		rockShader.Bind();
 		rockShader.SetMat4("projection", projection);
 		rockShader.SetMat4("view", view);
