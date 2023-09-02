@@ -42,9 +42,13 @@ private:
 	std::vector<Texture> LoadMaterialTextures(aiMaterial* mat, aiTextureType type,
 		std::string typeName);
 
-private:
-	std::vector<Mesh>meshes;
+public:
+	std::vector<Mesh>& GetMesh() { return meshes; }
+	const std::vector<Mesh>& GetMesh() const { return meshes; }
+
+public:
 	std::vector<Texture>textures_loaded;
+	std::vector<Mesh>meshes;
 	std::string directory;
 };
 

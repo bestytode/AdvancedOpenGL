@@ -59,8 +59,8 @@ int main()
 	Model mars("res/models/planet/planet.obj");
 
 	// Build & compile shader(s)
-	Shader marsShader("res/shaders/instancing.vs", "res/shaders/instancing_mars.fs");
-	Shader rockShader("res/shaders/instancing.vs", "res/shaders/instancing_rock.fs");
+	Shader marsShader("res/shaders/instancing_mars.vs", "res/shaders/instancing_mars.fs");
+	Shader rockShader("res/shaders/instancing_rock.vs", "res/shaders/instancing_rock.fs");
 
 	// Generate a large list of semi-random model transformation matrices
 	unsigned int amount = 1000;
@@ -112,6 +112,35 @@ int main()
 		rotationSpeeds[i] = angleDistribution(gen);  // Random rotation speed
 	}
 
+	// configure instanced array
+	unsigned int buffer;
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
+
+	// Loop through each mesh in the rock model
+	for (unsigned int i = 0; i < rock.meshes.size(); i++)
+	{
+		// Bind the VAO of the current mesh
+		unsigned int VAO = rock.meshes[i].GetVAO();
+		glBindVertexArray(VAO);
+
+		// Enable and set vertex attributes for the model matrix.
+		// A mat4 is treated as an array of 4 vec4s.
+		for (int j = 0; j < 4; j++) {
+			// Enable the vertex attribute at location 3 + j
+			glEnableVertexAttribArray(3 + j);
+
+			// Specify how the data for that attribute is retrieved from the array
+			glVertexAttribPointer(3 + j, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4)* j));
+
+			// Set the attribute divisor to 1 to update the attribute once per instance
+			glVertexAttribDivisor(3 + j, 1);
+		}
+
+		glBindVertexArray(0);
+	}
+
 	int counter = 0;
 	const int maxPrints = 30;
 	while (!glfwWindowShouldClose(window)) {
@@ -140,6 +169,9 @@ int main()
 			model = glm::rotate(model, angle, axis[i]); // random angle & random axis
 			modelMatrices[i] = model;
 		}
+		// Update the buffer with the new transformations
+		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, amount * sizeof(glm::mat4), &modelMatrices[0]);
 
 		// Configure transformation matrices
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
@@ -159,10 +191,16 @@ int main()
 		rockShader.Bind();
 		rockShader.SetMat4("projection", projection);
 		rockShader.SetMat4("view", view);
-		for (size_t i = 0; i < amount; i++) {
-			rockShader.SetMat4("model", modelMatrices[i]);
-			rock.Draw(rockShader);
-		}
+		rockShader.SetInt("texture_normal1", 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, rock.textures_loaded[0].id);
+
+		// Special case: The rock model has only one mesh.
+        // Directly bind its VAO and draw it instanced.
+        // Note: This won't work for models with multiple meshes.
+		glBindVertexArray(rock.meshes[0].GetVAO());
+		glDrawElementsInstanced(GL_TRIANGLES, (unsigned int)(rock.meshes[0].indices.size()), GL_UNSIGNED_INT, 0, amount);
+		glBindVertexArray(0);
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);

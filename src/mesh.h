@@ -36,6 +36,9 @@ public:
 	std::vector<unsigned int> indices;
 	std::vector<Texture> textures;
 
+public:
+    unsigned int GetVAO() { return VAO; }
+	const unsigned int GetVAO() const { return VAO; }
 private:
 	unsigned int VAO, VBO, IBO;
 

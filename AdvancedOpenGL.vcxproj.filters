@@ -56,9 +56,10 @@
     <None Include="res\shaders\geometry_shader.gs" />
     <None Include="res\shaders\normal_visualization_default.vs" />
     <None Include="res\shaders\normal_visualization_default.fs" />
-    <None Include="res\shaders\instancing.vs" />
+    <None Include="res\shaders\instancing_rock.vs" />
     <None Include="res\shaders\instancing_mars.fs" />
     <None Include="res\shaders\instancing_rock.fs" />
+    <None Include="res\shaders\instancing_mars.vs" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\instancing.cpp">
