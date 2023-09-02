@@ -17,7 +17,7 @@ const unsigned int SCR_WIDTH = 1600;
 const unsigned int SCR_HEIGHT = 1200;
 
 // camera
-Camera camera(glm::vec3(35.0f, 0.0f, 35.0f));
+Camera camera(glm::vec3(0.0f, 10.0f, 75.0f));
 float lastX = (float)SCR_WIDTH / 2.0;
 float lastY = (float)SCR_HEIGHT / 2.0;
 bool firstMouse = true;
@@ -63,14 +63,14 @@ int main()
 	Shader rockShader("res/shaders/instancing_rock.vs", "res/shaders/instancing_rock.fs");
 
 	// Generate a large list of semi-random model transformation matrices
-	unsigned int amount = 1000;
+	unsigned int amount = 10000;
 	glm::mat4* modelMatrices = new glm::mat4[amount];
 	glm::vec3* axis = new glm::vec3[amount]; // Stores the rotation axis for each rock instance
 
 	std::random_device rd;
 	std::mt19937 gen(rd()); // Initialize Mersenne Twister random number generator
 	std::uniform_real_distribution<float> dis(-1.0, 1.0);
-	std::uniform_real_distribution<float> scaleDis(0.05, 0.25);
+	std::uniform_real_distribution<float> scaleDis(0.05, 0.2);
 	std::uniform_real_distribution<float> angleDis(0.0, 360.0);
 	std::uniform_real_distribution<float> axisDis(0.0, 1.0);
 
@@ -78,7 +78,7 @@ int main()
 
 	// Offset: Controls the random displacement of each rock. 
     // Choose a rational range to minimize rock collisions.
-	float offset = 3.0f; 
+	float offset = 5.0f; 
 
 	// Loop to initialize each rock's model matrix
 	for (size_t i = 0; i < amount; i++) {
@@ -87,7 +87,7 @@ int main()
 		// 1. Translation: Displace each rock along a circle with a radius and a random offset
 		float angle = (float)(i) / (float)(amount) * 360.0f;
 		float x = sin(angle) * radius + dis(gen) * offset;
-		float y = 0.4 * dis(gen) * offset;
+		float y = 0.6 * dis(gen) * offset;
 		float z = cos(angle) * radius + dis(gen) * offset;
 		model = glm::translate(model, glm::vec3(x, y, z));
 
