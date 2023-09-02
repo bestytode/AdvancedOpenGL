@@ -112,12 +112,18 @@ int main()
 		rotationSpeeds[i] = angleDistribution(gen);  // Random rotation speed
 	}
 
+	int counter = 0;
+	const int maxPrintNumber = 30;
 	while (!glfwWindowShouldClose(window)) {
 		// Per-frame logic
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
-
+		if (counter < maxPrintNumber) {
+			std::cout << "Delta Time: " << deltaTime <<"\n";
+			counter++;
+		}
+		
 		// Render
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
