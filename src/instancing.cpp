@@ -112,9 +112,9 @@ int main()
 		rotationSpeeds[i] = angleDistribution(gen);  // Random rotation speed
 
 	// configure instanced array
-	unsigned int buffer;
-	glGenBuffers(1, &buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	unsigned int instancingBuffer;
+	glGenBuffers(1, &instancingBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, instancingBuffer);
 	glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
 
 	// Loop through each mesh in the rock model
@@ -140,14 +140,13 @@ int main()
 	}
 
 	int counter = 0;
-	const int maxPrints = 30;
+	const int maxPrints = 50;
 	while (!glfwWindowShouldClose(window)) {
 		// Per-frame logic
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 		if (counter < maxPrints) {
-			std::cout << "Delta Time: " << deltaTime << "\n";
 			std::cout << "fps: " << 1.0f / deltaTime << "\n";
 			counter++;
 		}
@@ -168,7 +167,7 @@ int main()
 			modelMatrices[i] = model;
 		}
 		// Update the buffer with the new transformations
-		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		glBindBuffer(GL_ARRAY_BUFFER, instancingBuffer);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, amount * sizeof(glm::mat4), &modelMatrices[0]);
 
 		// Configure transformation matrices
