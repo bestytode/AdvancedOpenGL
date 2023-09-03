@@ -25,7 +25,7 @@ public:
         up(glm::vec3(0.0f, 1.0f, 0.0f)),
         worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
         yaw(-90.f), pitch(0.0f),
-        movementSpeed(2.5f), mouseSensitivity(0.1f), fov(45.0f)
+        movementSpeed(5.0f), mouseSensitivity(0.1f), fov(45.0f)
     {
         right = glm::normalize(glm::cross(direction, worldUp));
         UpdateCameraVectors();
@@ -37,7 +37,7 @@ public:
         up(glm::vec3(0.0f, 1.0f, 0.0f)),
         worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
         yaw(-90.f), pitch(0.0f),
-        movementSpeed(2.5f), mouseSensitivity(0.1f), fov(45.0f)
+        movementSpeed(5.0f), mouseSensitivity(0.1f), fov(45.0f)
     {
         right = glm::normalize(glm::cross(direction, worldUp));
         UpdateCameraVectors();

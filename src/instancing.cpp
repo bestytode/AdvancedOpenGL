@@ -80,6 +80,8 @@ int main()
     // Choose a rational range to minimize rock collisions.
 	float offset = 5.0f; 
 
+	std::vector<glm::vec3> distanceVectors(amount); // Create a vector to store distance vectors
+
 	// Loop to initialize each rock's model matrix
 	for (size_t i = 0; i < amount; i++) {
 		glm::mat4 model = glm::mat4(1.0f);
@@ -91,6 +93,10 @@ int main()
 		float z = cos(angle) * radius + dis(gen) * offset;
 		model = glm::translate(model, glm::vec3(x, y, z));
 
+		// Store the distance vector
+		glm::vec3 distanceVector(x, y, z);
+		distanceVectors[i] = distanceVector;
+
 		// 2. Scaling: Randomly scale each rock
 		float scale = scaleDis(gen);
 		model = glm::scale(model, glm::vec3(scale));
@@ -100,6 +106,11 @@ int main()
 		glm::vec3 randomAxis(axisDis(gen), axisDis(gen), axisDis(gen));
 		model = glm::rotate(model, glm::radians(rotAngle), randomAxis);
 		axis[i] = randomAxis; // Store this axis for later use
+
+		// 4. Rotate around the origin by 30 degrees
+		model = glm::translate(model, -distanceVector);  // Move to origin
+		model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rotate
+		model = glm::translate(model, distanceVector);  // Move back
 
 		// 4. Store the model matrix
 		modelMatrices[i] = model;
@@ -179,7 +190,7 @@ int main()
 		marsShader.Bind();
 		marsShader.SetMat4("projection", projection);
 		marsShader.SetMat4("view", view);
-		model = glm::translate(model, glm::vec3(0.0f, -3.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(4.0f));
 		marsShader.SetMat4("model", model);
 		mars.Draw(marsShader);
