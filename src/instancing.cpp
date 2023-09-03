@@ -80,8 +80,6 @@ int main()
     // Choose a rational range to minimize rock collisions.
 	float offset = 5.0f; 
 
-	std::vector<glm::vec3> distanceVectors(amount); // Create a vector to store distance vectors
-
 	// Loop to initialize each rock's model matrix
 	for (size_t i = 0; i < amount; i++) {
 		glm::mat4 model = glm::mat4(1.0f);
@@ -91,11 +89,7 @@ int main()
 		float x = sin(angle) * radius + dis(gen) * offset;
 		float y = 0.6 * dis(gen) * offset;
 		float z = cos(angle) * radius + dis(gen) * offset;
-		model = glm::translate(model, glm::vec3(x, y, z));
-
-		// Store the distance vector
-		glm::vec3 distanceVector(x, y, z);
-		distanceVectors[i] = distanceVector;
+		model = glm::translate(model, glm::vec3(-x, -y, -z));
 
 		// 2. Scaling: Randomly scale each rock
 		float scale = scaleDis(gen);
@@ -106,11 +100,6 @@ int main()
 		glm::vec3 randomAxis(axisDis(gen), axisDis(gen), axisDis(gen));
 		model = glm::rotate(model, glm::radians(rotAngle), randomAxis);
 		axis[i] = randomAxis; // Store this axis for later use
-
-		// 4. Rotate around the origin by 30 degrees
-		model = glm::translate(model, -distanceVector);  // Move to origin
-		model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rotate
-		model = glm::translate(model, distanceVector);  // Move back
 
 		// 4. Store the model matrix
 		modelMatrices[i] = model;
@@ -126,7 +115,7 @@ int main()
 	unsigned int instancingBuffer;
 	glGenBuffers(1, &instancingBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, instancingBuffer);
-	glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), &modelMatrices[0][0], GL_STATIC_DRAW);
 
 	// Loop through each mesh in the rock model
 	for (unsigned int i = 0; i < rock.meshes.size(); i++) {
@@ -179,7 +168,7 @@ int main()
 		}
 		// Update the buffer with the new transformations
 		glBindBuffer(GL_ARRAY_BUFFER, instancingBuffer);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, amount * sizeof(glm::mat4), &modelMatrices[0]);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, amount * sizeof(glm::mat4), &modelMatrices[0][0]);
 
 		// Configure transformation matrices
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
