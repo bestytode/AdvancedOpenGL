@@ -204,6 +204,9 @@ int main()
 		glfwPollEvents();
 	}
 
+	delete[] modelMatrices;
+	delete[] axis;
+	delete[] rotationSpeeds;
 	glfwTerminate();
 }
 
