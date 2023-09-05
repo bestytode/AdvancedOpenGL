@@ -81,21 +81,23 @@ int main()
 	float offset = 5.0f; 
 
 	// Loop to initialize each rock's model matrix
+	// Notice: reversed order here
 	for (size_t i = 0; i < amount; i++) {
 		glm::mat4 model = glm::mat4(1.0f);
 
-		// 1. Translation: Displace each rock along a circle with a radius and a random offset
+		// 3. Translation: Displace each rock along a circle with a radius and a random offset
 		float angle = (float)(i) / (float)(amount) * 360.0f;
 		float x = sin(angle) * radius + dis(gen) * offset;
 		float y = 0.6 * dis(gen) * offset;
 		float z = cos(angle) * radius + dis(gen) * offset;
-		model = glm::translate(model, glm::vec3(-x, -y, -z));
+		//model = glm::translate(model, glm::vec3(-x, -y, -z));
+		model = glm::translate(model, glm::vec3(+x, +y, +z));
 
 		// 2. Scaling: Randomly scale each rock
 		float scale = scaleDis(gen);
 		model = glm::scale(model, glm::vec3(scale));
 
-		// 3. Rotation: Apply a random initial rotation around a random axis
+		// 1. Rotation: Apply a random initial rotation around a random axis
 		float rotAngle = angleDis(gen);
 		glm::vec3 randomAxis(axisDis(gen), axisDis(gen), axisDis(gen));
 		model = glm::rotate(model, glm::radians(rotAngle), randomAxis);
@@ -162,6 +164,8 @@ int main()
 		// Using deltaTime to ensure frame-rate independent rotation
 		for (unsigned int i = 0; i < amount; i++) {
 			glm::mat4 model = modelMatrices[i];
+
+			// Rotate around the rock's own axis
 			float angle = rotationSpeeds[i] * deltaTime;
 			model = glm::rotate(model, angle, axis[i]); // random angle & random axis
 			modelMatrices[i] = model;
