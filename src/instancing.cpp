@@ -90,7 +90,6 @@ int main()
 		float x = sin(angle) * radius + dis(gen) * offset;
 		float y = 0.6 * dis(gen) * offset;
 		float z = cos(angle) * radius + dis(gen) * offset;
-		//model = glm::translate(model, glm::vec3(-x, -y, -z));
 		model = glm::translate(model, glm::vec3(+x, +y, +z));
 
 		// 2. Scaling: Randomly scale each rock
