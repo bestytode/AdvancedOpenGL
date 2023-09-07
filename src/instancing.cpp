@@ -63,7 +63,7 @@ int main()
 	Shader rockShader("res/shaders/instancing_rock.vs", "res/shaders/instancing_rock.fs");
 
 	// Generate a large list of semi-random model transformation matrices
-	unsigned int amount = 10000;
+	unsigned int amount = 5000;
 	glm::mat4* modelMatrices = new glm::mat4[amount]; // the actual data storing the model matrices
 	glm::vec3* axis = new glm::vec3[amount]; // Stores the rotation axis for each rock instance
 

@@ -26,28 +26,42 @@ struct Texture
 class Mesh
 {
 public:
-	Mesh() = delete;
-	Mesh(Mesh&& other) noexcept;
-	Mesh& operator=(Mesh&& other) noexcept;
-	Mesh(const std::vector<Vertex>& _vertices,
-		const std::vector<unsigned int>& _indices,
-		const std::vector<Texture>& _textures,
-		bool _hasTangentAndBitangent);
-	~Mesh();
-	void Draw(Shader& shader) const;
+	// Constructors and Destructor
+	Mesh() = delete;  // Deleted default constructor
+	Mesh(const std::vector<Vertex>& vertices,
+		const std::vector<unsigned int>& indices,
+		const std::vector<Texture>& textures,
+		bool hasTangentAndBitangent);  // Parameterized constructor
+	~Mesh();  // Destructor
 
-public:
+	// Move Semantics
+	Mesh(Mesh&& other) noexcept;  // Move constructor
+	Mesh& operator=(Mesh&& other) noexcept;  // Move assignment operator
+
+	// Deleted Copy Semantics
+	// Prevent copying as this class manages OpenGL resources
+	Mesh(const Mesh&) = delete;
+	Mesh& operator=(const Mesh&) = delete;
+
+	// Public Methods
+	void Draw(Shader& shader) const;  // Draw the mesh
+
+	// Accessors
+	unsigned int GetVAO();
+	const unsigned int GetVAO() const;
+
+	// Public Members
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 	std::vector<Texture> textures;
 
-public:
-    unsigned int GetVAO() { return VAO; }
-	const unsigned int GetVAO() const { return VAO; }
 private:
+	// Private Methods
+	void SetupMesh();  // Initialize OpenGL objects
+
+	// Private Members
 	unsigned int VAO, VBO, IBO;
 	bool hasTangentAndBitangent = false;
-	void SetupMesh();
 };
 
 Mesh::Mesh(const std::vector<Vertex>& _vertices, 
