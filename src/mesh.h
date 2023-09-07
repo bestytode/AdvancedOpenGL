@@ -47,8 +47,8 @@ public:
 	void Draw(Shader& shader) const;  // Draw the mesh
 
 	// Accessors
-	unsigned int GetVAO();
-	const unsigned int GetVAO() const;
+	unsigned int GetVAO() { return VAO; }
+	const unsigned int GetVAO() const { return VAO; }
 
 	// Public Members
 	std::vector<Vertex> vertices;
