@@ -12,6 +12,8 @@ struct Vertex
 	glm::vec3 position;
 	glm::vec3 normal;
 	glm::vec2 texCoords;
+	glm::vec3 Tangent;
+	glm::vec3 Bitangent;
 };
 
 struct Texture
@@ -25,10 +27,13 @@ class Mesh
 {
 public:
 	Mesh() = delete;
+	Mesh(Mesh&& other) noexcept;
+	Mesh& operator=(Mesh&& other) noexcept;
 	Mesh(const std::vector<Vertex>& _vertices,
 		const std::vector<unsigned int>& _indices,
-		const std::vector<Texture>& _textures);
-	~Mesh() = default;
+		const std::vector<Texture>& _textures,
+		bool _hasTangentAndBitangent);
+	~Mesh();
 	void Draw(Shader& shader) const;
 
 public:
@@ -41,21 +46,75 @@ public:
 	const unsigned int GetVAO() const { return VAO; }
 private:
 	unsigned int VAO, VBO, IBO;
-
+	bool hasTangentAndBitangent = false;
 	void SetupMesh();
 };
 
 Mesh::Mesh(const std::vector<Vertex>& _vertices, 
 	const std::vector<unsigned int>& _indices, 
-	const std::vector<Texture>& _textures)
+	const std::vector<Texture>& _textures,
+	bool _hasTangentAndBitangent)
 {
 	this->vertices = _vertices;
 	this->indices = _indices;
 	this->textures = _textures;
-
+	this->hasTangentAndBitangent = _hasTangentAndBitangent;
+#ifdef _DEBUG
+	if (hasTangentAndBitangent) {
+		std::cout << "Mesh has tangents and bitangents.\n";
+	}
+	else {
+		std::cout << "Mesh does not have tangents and bitangents.\n";
+	}
+#endif
 	SetupMesh();
 }
 
+Mesh::~Mesh()
+{
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &IBO);
+}
+
+// Move constructor
+Mesh::Mesh(Mesh&& other) noexcept
+	: VAO(other.VAO), VBO(other.VBO), IBO(other.IBO),
+	vertices(std::move(other.vertices)), indices(std::move(other.indices)),
+	textures(std::move(other.textures)), hasTangentAndBitangent(other.hasTangentAndBitangent)
+{
+	// Invalidate the moved-from object's OpenGL handles
+	other.VAO = 0;
+	other.VBO = 0;
+	other.IBO = 0;
+}
+
+// Move assignment operator
+Mesh& Mesh::operator=(Mesh&& other) noexcept
+{
+	if (this != &other)
+	{
+		// Release any resources held by *this
+		glDeleteVertexArrays(1, &VAO);
+		glDeleteBuffers(1, &VBO);
+		glDeleteBuffers(1, &IBO);
+
+		// Steal the resources from other
+		VAO = other.VAO;
+		VBO = other.VBO;
+		IBO = other.IBO;
+		vertices = std::move(other.vertices);
+		indices = std::move(other.indices);
+		textures = std::move(other.textures);
+		hasTangentAndBitangent = other.hasTangentAndBitangent;
+
+		// Invalidate the moved-from object's OpenGL handles
+		other.VAO = 0;
+		other.VBO = 0;
+		other.IBO = 0;
+	}
+	return *this;
+}
 // first calculate the N-component per texture type and concatenate it to the texture's type string to get the uniform name. 
 // then locate the appropriate sampler, give it the location value to correspond with the currently active texture unit, and bind the texture. 
 void Mesh::Draw(Shader& shader) const
@@ -114,6 +173,15 @@ void Mesh::SetupMesh()
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
 
+	if (hasTangentAndBitangent) {
+		// vertex tangent
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
+
+		// vertex bitangent
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
+	}
 	// Unbind VAO
 	glBindVertexArray(0);
 }

@@ -77,7 +77,7 @@ inline void Model::ProcessNode(aiNode* currentNode, const aiScene* scene)
 		// mMeshes in node store the index,
 		// where mMeshes in scene hold the actual objects
 		aiMesh* mesh = scene->mMeshes[currentNode->mMeshes[i]];
-		meshes.push_back(ProcessMesh(mesh, scene));
+		meshes.emplace_back(ProcessMesh(mesh, scene));
 	}
 
 	for (size_t i = 0; i < currentNode->mNumChildren; i++) {
@@ -92,32 +92,30 @@ inline Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 	std::vector<unsigned int>indices;
 	std::vector<Texture>textures;
 
-	// vertices
 	for (size_t i = 0; i < mesh->mNumVertices; i++) {
 		Vertex vertex;
 
-		// we declare a placeholder vector since assimp uses its own vector class 
-		// that doesn't directly convert to glm's vec3 class.
-		glm::vec3 vector(1.0f);
-		vector.x = mesh->mVertices[i].x;
-		vector.y = mesh->mVertices[i].y;
-		vector.z = mesh->mVertices[i].z;
-		vertex.position = vector;
+		// Positions
+		vertex.position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
 
+		// Normals
 		if (mesh->HasNormals()) {
-			vector.x = mesh->mNormals[i].x;
-			vector.y = mesh->mNormals[i].y;
-			vector.z = mesh->mNormals[i].z;
-			vertex.normal = vector;
+			vertex.normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
 		}
+
+		// Texture Coordinates
 		if (mesh->mTextureCoords[0]) {
-			glm::vec2 vec;
-			vec.x = mesh->mTextureCoords[0][i].x;
-			vec.y = mesh->mTextureCoords[0][i].y;
-			vertex.texCoords = vec;
+			vertex.texCoords = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
 		}
-		else
-			vertex.texCoords = glm::vec2(0.0f);
+		else {
+			vertex.texCoords = glm::vec2(0.0f, 0.0f);
+		}
+
+		// Tangents and Bitangents
+		if (mesh->HasTangentsAndBitangents()) {
+			vertex.Tangent = glm::vec3(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z);
+			vertex.Bitangent = glm::vec3(mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z);
+		}
 
 		vertices.push_back(vertex);
 	}
@@ -161,7 +159,10 @@ inline Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 		std::vector<Texture> heightMaps = LoadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
 		textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 	}
-	return Mesh(vertices, indices, textures);
+	if (mesh->HasTangentsAndBitangents()) 
+		return Mesh(vertices, indices, textures, true);
+	else
+		return Mesh(vertices, indices, textures, false);
 }
 
 // Return a vector contains Texture, retriving texture information from aiMaterial to our own textures and textures_loaded
