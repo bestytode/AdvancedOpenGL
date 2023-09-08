@@ -57,6 +57,7 @@ int main()
 	// Load model(s)
 	Model rock("res/models/rock/rock.obj");
 	Model mars("res/models/planet/planet.obj");
+	//Model nanosuit("res/models/nanosuit.obj");
 
 	// Build & compile shader(s)
 	Shader marsShader("res/shaders/instancing_mars.vs", "res/shaders/instancing_mars.fs");
