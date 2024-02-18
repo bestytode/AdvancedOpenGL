@@ -192,7 +192,7 @@ int main()
 		rockShader.Bind();
 		rockShader.SetMat4("projection", projection);
 		rockShader.SetMat4("view", view);
-		rockShader.SetInt("texture_normal1", 0);
+		//rockShader.SetInt("texture_normal1", 0);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, rock.textures_loaded[0].id);
 
