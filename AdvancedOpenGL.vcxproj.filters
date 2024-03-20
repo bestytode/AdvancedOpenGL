@@ -60,9 +60,11 @@
     <None Include="res\shaders\instancing_mars.fs" />
     <None Include="res\shaders\instancing_rock.fs" />
     <None Include="res\shaders\instancing_mars.vs" />
+    <None Include="res\shaders\lab7.vs" />
+    <None Include="res\shaders\lab7.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\instancing.cpp">
+    <ClCompile Include="src\lab7.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

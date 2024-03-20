@@ -177,6 +177,8 @@
     <None Include="res\shaders\instancing_mars.fs" />
     <None Include="res\shaders\instancing_rock.vs" />
     <None Include="res\shaders\instancing_mars.vs" />
+    <None Include="res\shaders\lab7.fs" />
+    <None Include="res\shaders\lab7.vs" />
     <None Include="res\shaders\normal_visualization_default.fs" />
     <None Include="res\shaders\normal_visualization_default.vs" />
     <None Include="res\shaders\red.fs" />
@@ -188,7 +190,7 @@
     <None Include="res\shaders\yellow.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\instancing.cpp" />
+    <ClCompile Include="src\lab7.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
